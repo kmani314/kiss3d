@@ -113,8 +113,6 @@ impl AbstractCanvas for WebGLCanvas {
         let _ = web::window().add_event_listener(move |e: webevent::TouchStart| {
             let mut edata = edata.borrow_mut();
             for t in e.changed_touches() {
-                console!(log, format!("Touch start."));
-
                 let _ = edata.pending_events.push(WindowEvent::Touch(
                     t.identifier() as u64,
                     t.client_x() as f64 * hidpi_factor,
@@ -129,13 +127,11 @@ impl AbstractCanvas for WebGLCanvas {
         let _ = web::window().add_event_listener(move |e: webevent::TouchEnd| {
             let mut edata = edata.borrow_mut();
             for t in e.changed_touches() {
-                console!(log, format!("Touch end."));
-
                 let _ = edata.pending_events.push(WindowEvent::Touch(
                     t.identifier() as u64,
                     t.client_x() as f64 * hidpi_factor,
                     t.client_y() as f64 * hidpi_factor,
-                    TouchAction::Start,
+                    TouchAction::End,
                     translate_touch_modifiers(&e),
                 ));
             }
@@ -145,8 +141,6 @@ impl AbstractCanvas for WebGLCanvas {
         let _ = web::window().add_event_listener(move |e: webevent::TouchCancel| {
             let mut edata = edata.borrow_mut();
             for t in e.changed_touches() {
-                console!(log, format!("Touch cancel."));
-
                 let _ = edata.pending_events.push(WindowEvent::Touch(
                     t.identifier() as u64,
                     t.client_x() as f64 * hidpi_factor,
@@ -163,7 +157,6 @@ impl AbstractCanvas for WebGLCanvas {
 
             for t in e.changed_touches() {
                 edata.cursor_pos = Some((t.client_x() as f64 * hidpi_factor, t.client_y() as f64 * hidpi_factor));
-                console!(log, format!("Touch move: {}, {}", t.client_x(), t.client_y()));
                 let _ = edata.pending_events.push(WindowEvent::Touch(
                     t.identifier() as u64,
                     t.client_x() as f64 * hidpi_factor,
